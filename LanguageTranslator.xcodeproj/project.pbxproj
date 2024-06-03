@@ -21,6 +21,7 @@
 		C01A46602C0DEE6A0065E285 /* LanguageTranslatorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01A465F2C0DEE6A0065E285 /* LanguageTranslatorUITestsLaunchTests.swift */; };
 		C01A466D2C0DEF070065E285 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01A466C2C0DEF060065E285 /* CameraVC.swift */; };
 		C044C1C52C0E08C000A51EC0 /* PixelBufferHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */; };
+		C0A4CE8B2C0E2631002F05BD /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		C01A466C2C0DEF060065E285 /* CameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
 		C01B673138818986EFC5B132 /* Pods-LanguageTranslatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.debug.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferHelpers.swift; sourceTree = "<group>"; };
+		C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
 		CDE8027261DEFA6F7BAFC5F3 /* Pods-LanguageTranslatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.release.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		DADEA93487DBD5EA9F28A698 /* Pods_LanguageTranslator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LanguageTranslator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0044CA18417B8B11504AE7 /* Pods_LanguageTranslator_LanguageTranslatorUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LanguageTranslator_LanguageTranslatorUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +141,7 @@
 				C01A46472C0DEE6A0065E285 /* LaunchScreen.storyboard */,
 				C01A464A2C0DEE6A0065E285 /* Info.plist */,
 				C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */,
+				C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */,
 			);
 			path = LanguageTranslator;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 			files = (
 				C01A46412C0DEE690065E285 /* ViewController.swift in Sources */,
 				C01A463D2C0DEE690065E285 /* AppDelegate.swift in Sources */,
+				C0A4CE8B2C0E2631002F05BD /* CameraOverlayView.swift in Sources */,
 				C01A463F2C0DEE690065E285 /* SceneDelegate.swift in Sources */,
 				C044C1C52C0E08C000A51EC0 /* PixelBufferHelpers.swift in Sources */,
 				C01A466D2C0DEF070065E285 /* CameraVC.swift in Sources */,
@@ -644,6 +648,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -674,6 +679,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

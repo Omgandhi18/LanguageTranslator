@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 import CoreVideo
 import MLKit
+import MaterialComponents
 private let boxWidth: CGFloat = 340.0
 private let boxHeight: CGFloat = 100.0
 private let boxWidthHalf = boxWidth / 2
@@ -17,8 +18,15 @@ private let hdWidth: CGFloat = 720  // AVCaptureSession.Preset.hd1280x720
 private let hdHeight: CGFloat = 1280  // AVCaptureSession.Preset.hd1280x720
 private let hdWidthHalf = hdWidth / 2
 private let hdHeightHalf = hdHeight / 2
+private let defaultMargin: CGFloat = 16
+private let chipHeight: CGFloat = 32
+private let chipHeightHalf = chipHeight / 2
+private let customSelectedColor = UIColor(red: 0.10, green: 0.45, blue: 0.91, alpha: 1.0)
+private let backgroundColor = UIColor(red: 0.91, green: 0.94, blue: 0.99, alpha: 1.0)
+
 class CameraVC: UIViewController {
 
+    @IBOutlet weak var lblTranslatedText: UILabel!
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var lblDetectedText: UILabel!
     
@@ -27,8 +35,21 @@ class CameraVC: UIViewController {
     var detectedText = ""
     var captureSession = AVCaptureSession()
     var previewLayer = AVCaptureVideoPreviewLayer()
+    private var cameraOverlayView: CameraOverlayView!
     private lazy var languageId = LanguageIdentification.languageIdentification()
     private lazy var sessionQueue = DispatchQueue(label: "com.google.mlkit.visiondetector.SessionQueue")
+    private lazy var shapeGenerator: MDCRectangleShapeGenerator = {
+        let gen = MDCRectangleShapeGenerator()
+        gen.setCorners(MDCCornerTreatment.corner(withRadius: 4))
+        return gen
+      }()
+    let containerScheme = MDCContainerScheme()
+    private lazy var annotationOverlayView: UIView = {
+       precondition(isViewLoaded)
+       let annotationOverlayView = UIView(frame: .zero)
+       annotationOverlayView.translatesAutoresizingMaskIntoConstraints = false
+       return annotationOverlayView
+     }()
     var cropX = 0
      var cropWidth = 0
      var cropY = 0
@@ -38,6 +59,7 @@ class CameraVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadCamera()
+        setUpCameraOverlayView()
         let ratio = hdWidth / cameraView.bounds.width
             cropX = Int(hdHeightHalf - (ratio * boxHeightHalf))
             cropWidth = Int(boxHeight * ratio)
@@ -48,10 +70,16 @@ class CameraVC: UIViewController {
         setUpCaptureSessionInput()
         // Do any additional setup after loading the view.
     }
+    override func viewDidAppear(_ animated: Bool) {
+        if cameraOverlayView == nil {
+              setUpCameraOverlayView()
+            }
+            startSession()
+    }
     
     func loadCamera() {
             
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+        let device = AVCaptureDevice.default(.builtInTripleCamera, for: AVMediaType.video, position: .back)
             
             do {
                 let input = try AVCaptureDeviceInput(device: device!)
@@ -72,6 +100,20 @@ class CameraVC: UIViewController {
                 print(error)
             }
         }
+    private func setUpCameraOverlayView() {
+        cameraOverlayView = CameraOverlayView(frame: cameraView.bounds)
+        let rect = CGRect(
+          x: cameraView.bounds.midX - boxWidthHalf,
+          y: cameraView.bounds.midY - boxHeightHalf,
+          width: boxWidth,
+          height: boxHeight)
+        cameraOverlayView.showBox(in: rect)
+        cameraView.addSubview(cameraOverlayView)
+        let chipY = cameraView.bounds.midY + boxHeightHalf + chipHeightHalf + defaultMargin
+        cameraOverlayView.showMessage(
+          "Center text in box and hold for a while",
+          in: CGPoint(x: cameraView.bounds.midX, y: chipY))
+      }
     private func setUpCaptureSessionOutput() {
         sessionQueue.async {
           self.captureSession.beginConfiguration()
@@ -123,7 +165,7 @@ class CameraVC: UIViewController {
     private func captureDevice(forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
        if #available(iOS 10.0, *) {
          let discoverySession = AVCaptureDevice.DiscoverySession(
-           deviceTypes: [.builtInWideAngleCamera],
+            deviceTypes: [.builtInTripleCamera],
            mediaType: .video,
            position: .unspecified
          )
@@ -143,8 +185,7 @@ class CameraVC: UIViewController {
         }
       }
     private func recognizeTextOnDevice(in image: VisionImage) {
-        let options = TextRecognizerOptions()
-        let textRecognizer = TextRecognizer.textRecognizer(options: options)
+        let textRecognizer = TextRecognizer.textRecognizer()
         let group = DispatchGroup()
         group.enter()
         textRecognizer.process(image) { text, error in
@@ -190,13 +231,15 @@ class CameraVC: UIViewController {
           if translatorForDownloading == self.translator {
             translatorForDownloading.translate(inputText) { result, error in
               self.startSession()
+              self.lblTranslatedText.text = ""
               guard error == nil else {
                 print("Failed with error \(error!)")
+                  self.lblTranslatedText.text = ""
                 return
               }
               if translatorForDownloading == self.translator {
                 DispatchQueue.main.async {
-                  self.lblDetectedText.text = result
+                  self.lblTranslatedText.text = result
                 }
               }
             }
