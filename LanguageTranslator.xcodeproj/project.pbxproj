@@ -22,6 +22,9 @@
 		C01A466D2C0DEF070065E285 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01A466C2C0DEF060065E285 /* CameraVC.swift */; };
 		C044C1C52C0E08C000A51EC0 /* PixelBufferHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */; };
 		C051A5402C184E5100C8E031 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C051A53F2C184E5100C8E031 /* HomeVC.swift */; };
+		C095DFDD2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C095DFDC2C187D37005F65AF /* TAN MERINGUE.ttf */; };
+		C095DFDE2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C095DFDC2C187D37005F65AF /* TAN MERINGUE.ttf */; };
+		C095DFDF2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C095DFDC2C187D37005F65AF /* TAN MERINGUE.ttf */; };
 		C0A4CE8B2C0E2631002F05BD /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +68,7 @@
 		C01B673138818986EFC5B132 /* Pods-LanguageTranslatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.debug.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferHelpers.swift; sourceTree = "<group>"; };
 		C051A53F2C184E5100C8E031 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		C095DFDC2C187D37005F65AF /* TAN MERINGUE.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TAN MERINGUE.ttf"; sourceTree = "<group>"; };
 		C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
 		CDE8027261DEFA6F7BAFC5F3 /* Pods-LanguageTranslatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.release.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		DADEA93487DBD5EA9F28A698 /* Pods_LanguageTranslator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LanguageTranslator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +138,7 @@
 		C01A463B2C0DEE690065E285 /* LanguageTranslator */ = {
 			isa = PBXGroup;
 			children = (
+				C095DFDB2C187D0F005F65AF /* Fonts */,
 				C01A463C2C0DEE690065E285 /* AppDelegate.swift */,
 				C01A463E2C0DEE690065E285 /* SceneDelegate.swift */,
 				C01A46402C0DEE690065E285 /* ViewController.swift */,
@@ -164,6 +169,14 @@
 				C01A465F2C0DEE6A0065E285 /* LanguageTranslatorUITestsLaunchTests.swift */,
 			);
 			path = LanguageTranslatorUITests;
+			sourceTree = "<group>";
+		};
+		C095DFDB2C187D0F005F65AF /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C095DFDC2C187D37005F65AF /* TAN MERINGUE.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		F9EAEDFB5B6E591F5A86A8B9 /* Pods */ = {
@@ -293,6 +306,7 @@
 				C01A46462C0DEE6A0065E285 /* Assets.xcassets in Resources */,
 				C01A46492C0DEE6A0065E285 /* Base in Resources */,
 				C01A46442C0DEE690065E285 /* Base in Resources */,
+				C095DFDD2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C095DFDE2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C095DFDF2C187D37005F65AF /* TAN MERINGUE.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
