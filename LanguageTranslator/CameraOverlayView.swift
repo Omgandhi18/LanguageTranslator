@@ -36,7 +36,7 @@ class CameraOverlayView: UIView {
     layer.addSublayer(boxLayer)
 
     messageChip.setBackgroundColor(
-      UIColor.black.withAlphaComponent(kChipBackgroundAlpha), for: .normal)
+      UIColor.background.withAlphaComponent(kChipBackgroundAlpha), for: .normal)
     messageChip.clipsToBounds = true
     messageChip.titleLabel.textColor = UIColor.white
     messageChip.layer.cornerRadius = kChipCornerRadius

@@ -23,18 +23,24 @@ private let chipHeight: CGFloat = 32
 private let chipHeightHalf = chipHeight / 2
 private let customSelectedColor = UIColor(red: 0.10, green: 0.45, blue: 0.91, alpha: 1.0)
 private let backgroundColor = UIColor(red: 0.91, green: 0.94, blue: 0.99, alpha: 1.0)
-
+private let languageArr = [TranslateLanguage.afrikaans,TranslateLanguage.albanian,TranslateLanguage.arabic,TranslateLanguage.belarusian,TranslateLanguage.bengali,TranslateLanguage.bulgarian,TranslateLanguage.catalan,TranslateLanguage.chinese,TranslateLanguage.croatian,TranslateLanguage.czech,TranslateLanguage.danish,TranslateLanguage.dutch,TranslateLanguage.english,TranslateLanguage.eperanto,TranslateLanguage.estonian,TranslateLanguage.finnish,TranslateLanguage.french,TranslateLanguage.galician,TranslateLanguage.georgian,TranslateLanguage.german,TranslateLanguage.greek,TranslateLanguage.gujarati,TranslateLanguage.haitianCreole,TranslateLanguage.hebrew,TranslateLanguage.hindi,TranslateLanguage.hungarian,TranslateLanguage.icelandic,TranslateLanguage.indonesian,TranslateLanguage.irish,TranslateLanguage.irish,TranslateLanguage.italian,TranslateLanguage.japanese,TranslateLanguage.korean,TranslateLanguage.latvian,TranslateLanguage.lithuanian,TranslateLanguage.macedonian,TranslateLanguage.malay,TranslateLanguage.maltese,TranslateLanguage.marathi,TranslateLanguage.norwegian,TranslateLanguage.persian,TranslateLanguage.polish,TranslateLanguage.portuguese,TranslateLanguage.romanian,TranslateLanguage.russian,TranslateLanguage.slovak,TranslateLanguage.slovenian,TranslateLanguage.spanish,TranslateLanguage.swahili,TranslateLanguage.swedish,TranslateLanguage.tagalog,TranslateLanguage.tamil,TranslateLanguage.telugu,TranslateLanguage.thai,TranslateLanguage.turkish,TranslateLanguage.ukrainian,TranslateLanguage.urdu,TranslateLanguage.vietnamese,TranslateLanguage.welsh]
 class CameraVC: UIViewController {
+    
+    
 
     @IBOutlet weak var lblTranslatedText: UILabel!
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var lblDetectedText: UILabel!
+   
+    @IBOutlet weak var txtSelectTranslationLanguage: UITextField!
     
   
     private var pendingRequestWorkItem: DispatchWorkItem?
     var detectedText = ""
     var captureSession = AVCaptureSession()
     var previewLayer = AVCaptureVideoPreviewLayer()
+    var pickerArr = [TranslateLanguage]()
+    var selectedLanguage = TranslateLanguage.english
     private var cameraOverlayView: CameraOverlayView!
     private lazy var languageId = LanguageIdentification.languageIdentification()
     private lazy var sessionQueue = DispatchQueue(label: "com.google.mlkit.visiondetector.SessionQueue")
@@ -58,6 +64,8 @@ class CameraVC: UIViewController {
     var translator: Translator!
     override func viewDidLoad() {
         super.viewDidLoad()
+        pickerArr = languageArr
+        txtSelectTranslationLanguage.text = TranslateLanguage.english.localizedName()
         loadCamera()
         setUpCameraOverlayView()
         let ratio = hdWidth / cameraView.bounds.width
@@ -77,6 +85,9 @@ class CameraVC: UIViewController {
             startSession()
     }
     
+    @IBAction func btnDismiss(_ sender: Any) {
+        dismiss(animated: true)
+    }
     func loadCamera() {
             
         let device = AVCaptureDevice.default(.builtInTripleCamera, for: AVMediaType.video, position: .back)
@@ -210,7 +221,7 @@ class CameraVC: UIViewController {
             self.lblDetectedText.text = detection
           }
 
-          self.identifyLanguage(for: detection)
+            self.identifyLanguage(for: self.detectedText)
         }
         group.wait()
       }
@@ -218,9 +229,9 @@ class CameraVC: UIViewController {
         //MARK: Insert language selected option
         let options = TranslatorOptions(
           sourceLanguage: detectedLanguage,
-          targetLanguage: TranslateLanguage.english)
+          targetLanguage: selectedLanguage)
         translator = Translator.translator(options: options)
-
+        self.lblTranslatedText.text = "Processing"
         let translatorForDownloading = self.translator!
         translatorForDownloading.downloadModelIfNeeded { error in
           guard error == nil else {
@@ -267,7 +278,7 @@ class CameraVC: UIViewController {
             if detectedLanguage != self?.detectedLanguage {
               self?.detectedLanguage = detectedLanguage
               DispatchQueue.main.async {
-//                self?.detectedLanguageLabel.text = detectedLanguage.localizedName()
+//                self?.lblDetectedLanguage.text = detectedLanguage.localizedName()
               }
             }
             self?.translate(text)
@@ -280,6 +291,7 @@ class CameraVC: UIViewController {
           deadline: .now() + .milliseconds(50),
           execute: requestWorkItem)
       }
+    
     
 }
 extension CameraVC: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -366,7 +378,49 @@ extension CameraVC: AVCaptureVideoDataOutputSampleBufferDelegate {
        }
        return deviceOrientation()
      }
+    
    
 
 
+}
+extension CameraVC: UITextFieldDelegate, UIPickerViewDelegate,UIPickerViewDataSource{
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        let pickerView = UIPickerView(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 200))
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        
+        let toolBar = UIToolbar()
+        toolBar.sizeToFit()
+        let button = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.dismissAction))
+        toolBar.setItems([button], animated: true)
+        toolBar.isUserInteractionEnabled = true
+        textField.inputAccessoryView = toolBar
+       
+        textField.inputView = pickerView
+        return true
+    }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerArr.count
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerArr[row].localizedName()
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedLanguage = pickerArr[row]
+        txtSelectTranslationLanguage.text = pickerArr[row].localizedName()
+    }
+    @objc func dismissAction() {
+        translate(lblDetectedText.text ?? "")
+        view.endEditing(true)
+    }
+}
+extension TranslateLanguage{
+    func localizedName() -> String {
+       let locale = Locale.current
+       return locale.localizedString(forLanguageCode: self.rawValue)!
+     }
 }

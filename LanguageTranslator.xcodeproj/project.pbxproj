@@ -21,6 +21,7 @@
 		C01A46602C0DEE6A0065E285 /* LanguageTranslatorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01A465F2C0DEE6A0065E285 /* LanguageTranslatorUITestsLaunchTests.swift */; };
 		C01A466D2C0DEF070065E285 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01A466C2C0DEF060065E285 /* CameraVC.swift */; };
 		C044C1C52C0E08C000A51EC0 /* PixelBufferHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */; };
+		C051A5402C184E5100C8E031 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C051A53F2C184E5100C8E031 /* HomeVC.swift */; };
 		C0A4CE8B2C0E2631002F05BD /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		C01A466C2C0DEF060065E285 /* CameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
 		C01B673138818986EFC5B132 /* Pods-LanguageTranslatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.debug.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C044C1C42C0E08C000A51EC0 /* PixelBufferHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferHelpers.swift; sourceTree = "<group>"; };
+		C051A53F2C184E5100C8E031 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		C0A4CE8A2C0E2631002F05BD /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
 		CDE8027261DEFA6F7BAFC5F3 /* Pods-LanguageTranslatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LanguageTranslatorTests.release.xcconfig"; path = "Target Support Files/Pods-LanguageTranslatorTests/Pods-LanguageTranslatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		DADEA93487DBD5EA9F28A698 /* Pods_LanguageTranslator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LanguageTranslator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,6 +137,7 @@
 				C01A463C2C0DEE690065E285 /* AppDelegate.swift */,
 				C01A463E2C0DEE690065E285 /* SceneDelegate.swift */,
 				C01A46402C0DEE690065E285 /* ViewController.swift */,
+				C051A53F2C184E5100C8E031 /* HomeVC.swift */,
 				C01A466C2C0DEF060065E285 /* CameraVC.swift */,
 				C01A46422C0DEE690065E285 /* Main.storyboard */,
 				C01A46452C0DEE6A0065E285 /* Assets.xcassets */,
@@ -452,6 +455,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C01A46412C0DEE690065E285 /* ViewController.swift in Sources */,
+				C051A5402C184E5100C8E031 /* HomeVC.swift in Sources */,
 				C01A463D2C0DEE690065E285 /* AppDelegate.swift in Sources */,
 				C0A4CE8B2C0E2631002F05BD /* CameraOverlayView.swift in Sources */,
 				C01A463F2C0DEE690065E285 /* SceneDelegate.swift in Sources */,
@@ -643,6 +647,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LanguageTranslator/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Lingo Link";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -674,6 +679,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LanguageTranslator/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Lingo Link";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
