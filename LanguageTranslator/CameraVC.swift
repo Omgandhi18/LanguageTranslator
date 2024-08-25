@@ -64,18 +64,140 @@ class CameraVC: UIViewController {
     var translator: Translator!
     override func viewDidLoad() {
         super.viewDidLoad()
-        pickerArr = languageArr
-        txtSelectTranslationLanguage.text = TranslateLanguage.english.localizedName()
-        loadCamera()
-        setUpCameraOverlayView()
-        let ratio = hdWidth / cameraView.bounds.width
-            cropX = Int(hdHeightHalf - (ratio * boxHeightHalf))
-            cropWidth = Int(boxHeight * ratio)
-            cropY = Int(hdWidthHalf - (ratio * boxWidthHalf))
-            cropHeight = Int(boxWidth * ratio)
+        if AVCaptureDevice.authorizationStatus(for: .video) ==  AVAuthorizationStatus.authorized {
+            // Already Authorized
+            pickerArr = languageArr
+            txtSelectTranslationLanguage.text = TranslateLanguage.english.localizedName()
+            loadCamera()
+            sessionQueue.async {
+                self.captureSession.beginConfiguration()
+                // When performing latency tests to determine ideal capture settings,
+                // run the app in 'release' mode to get accurate performance metrics
+                let cameraPosition: AVCaptureDevice.Position = .back
+                guard let device = self.captureDevice(forPosition: cameraPosition) else {
+                  print("Failed to get capture device for back camera position")
+                  return
+                }
+                self.sessionQueue.async {
+                    do {
+                       
+                      self.captureSession.beginConfiguration()
+                      let currentInputs = self.captureSession.inputs
+                      for input in currentInputs {
+                        self.captureSession.removeInput(input)
+                      }
+
+                      let input = try AVCaptureDeviceInput(device: device)
+                      guard self.captureSession.canAddInput(input) else {
+                        print("Failed to add capture session input.")
+                        return
+                      }
+                      self.captureSession.addInput(input)
+                        self.captureSession.commitConfiguration()
+                    } catch {
+                      print("Failed to create capture device input: \(error.localizedDescription)")
+                    }
+
+                }
+
+                self.captureSession.sessionPreset = AVCaptureSession.Preset.hd1280x720
+
+                let output = AVCaptureVideoDataOutput()
+                output.videoSettings =
+                  [(kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA]
+                let outputQueue = DispatchQueue(label: "com.google.mlkit.visiondetector.VideoDataOutputQueue")
+                output.alwaysDiscardsLateVideoFrames = true
+                output.setSampleBufferDelegate(self, queue: outputQueue)
+                guard self.captureSession.canAddOutput(output) else {
+                  print("Failed to add capture session output.")
+                  return
+                }
+                
+                self.captureSession.addOutput(output)
+                self.captureSession.commitConfiguration()
+                self.captureSession.startRunning()
+
+            }
+            
+            setUpCameraOverlayView()
+            let ratio = hdWidth / cameraView.bounds.width
+                cropX = Int(hdHeightHalf - (ratio * boxHeightHalf))
+                cropWidth = Int(boxHeight * ratio)
+                cropY = Int(hdWidthHalf - (ratio * boxWidthHalf))
+                cropHeight = Int(boxWidth * ratio)
+            
+//           setUpCaptureSessionOutput()
+//            setUpCaptureSessionInput()
+        } else {
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: {[self] (granted: Bool) -> Void in
+               if granted == true {
+                   // User granted
+                   pickerArr = languageArr
+                   txtSelectTranslationLanguage.text = TranslateLanguage.english.localizedName()
+                   loadCamera()
+                   sessionQueue.async {
+                       self.captureSession.beginConfiguration()
+                       // When performing latency tests to determine ideal capture settings,
+                       // run the app in 'release' mode to get accurate performance metrics
+                       let cameraPosition: AVCaptureDevice.Position = .back
+                       guard let device = self.captureDevice(forPosition: cameraPosition) else {
+                         print("Failed to get capture device for back camera position")
+                         return
+                       }
+                       do {
+                         self.captureSession.beginConfiguration()
+                         let currentInputs = self.captureSession.inputs
+                         for input in currentInputs {
+                           self.captureSession.removeInput(input)
+                         }
+
+                         let input = try AVCaptureDeviceInput(device: device)
+                         guard self.captureSession.canAddInput(input) else {
+                           print("Failed to add capture session input.")
+                           return
+                         }
+                         self.captureSession.addInput(input)
+                       } catch {
+                         print("Failed to create capture device input: \(error.localizedDescription)")
+                       }
+
+                       self.captureSession.sessionPreset = AVCaptureSession.Preset.hd1280x720
+
+                       let output = AVCaptureVideoDataOutput()
+                       output.videoSettings =
+                         [(kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA]
+                       let outputQueue = DispatchQueue(label: "com.google.mlkit.visiondetector.VideoDataOutputQueue")
+                       output.alwaysDiscardsLateVideoFrames = true
+                       output.setSampleBufferDelegate(self, queue: outputQueue)
+                       guard self.captureSession.canAddOutput(output) else {
+                         print("Failed to add capture session output.")
+                         return
+                       }
+                       
+                       self.captureSession.addOutput(output)
+                       self.captureSession.commitConfiguration()
+                       self.captureSession.startRunning()
+
+                   }
+                   setUpCameraOverlayView()
+                   let ratio = hdWidth / cameraView.bounds.width
+                       cropX = Int(hdHeightHalf - (ratio * boxHeightHalf))
+                       cropWidth = Int(boxHeight * ratio)
+                       cropY = Int(hdWidthHalf - (ratio * boxWidthHalf))
+                       cropHeight = Int(boxWidth * ratio)
+                   
+//                  setUpCaptureSessionOutput()
+//                   setUpCaptureSessionInput()
+               } else {
+                   // User rejected
+                   DispatchQueue.main.async {
+                       self.dismiss(animated: true)
+                   }
+                   
+               }
+           })
+        }
         
-       setUpCaptureSessionOutput()
-        setUpCaptureSessionInput()
         // Do any additional setup after loading the view.
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -86,6 +208,7 @@ class CameraVC: UIViewController {
     }
     
     @IBAction func btnDismiss(_ sender: Any) {
+        captureSession.stopRunning()
         dismiss(animated: true)
     }
     func loadCamera() {
@@ -103,7 +226,10 @@ class CameraVC: UIViewController {
                     previewLayer.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
                     previewLayer.frame = cameraView.layer.frame
                     cameraView.layer.addSublayer(previewLayer)
-                    captureSession.startRunning()
+//                    DispatchQueue.global(qos: .background).async{
+//                        self.captureSession.startRunning()
+//                    }
+                    
                     
                 }
                 
@@ -127,51 +253,12 @@ class CameraVC: UIViewController {
       }
     private func setUpCaptureSessionOutput() {
         sessionQueue.async {
-          self.captureSession.beginConfiguration()
-          // When performing latency tests to determine ideal capture settings,
-          // run the app in 'release' mode to get accurate performance metrics
-          self.captureSession.sessionPreset = AVCaptureSession.Preset.hd1280x720
-
-          let output = AVCaptureVideoDataOutput()
-          output.videoSettings =
-            [(kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA]
-          let outputQueue = DispatchQueue(label: "com.google.mlkit.visiondetector.VideoDataOutputQueue")
-          output.alwaysDiscardsLateVideoFrames = true
-          output.setSampleBufferDelegate(self, queue: outputQueue)
-          guard self.captureSession.canAddOutput(output) else {
-            print("Failed to add capture session output.")
-            return
-          }
-          self.captureSession.addOutput(output)
-          self.captureSession.commitConfiguration()
         }
       }
 
       private func setUpCaptureSessionInput() {
         sessionQueue.async {
-          let cameraPosition: AVCaptureDevice.Position = .back
-          guard let device = self.captureDevice(forPosition: cameraPosition) else {
-            print("Failed to get capture device for back camera position")
-            return
-          }
-          do {
-            self.captureSession.beginConfiguration()
-            let currentInputs = self.captureSession.inputs
-            for input in currentInputs {
-              self.captureSession.removeInput(input)
-            }
-
-            let input = try AVCaptureDeviceInput(device: device)
-            guard self.captureSession.canAddInput(input) else {
-              print("Failed to add capture session input.")
-              return
-            }
-            self.captureSession.addInput(input)
-            self.captureSession.commitConfiguration()
-          } catch {
-            print("Failed to create capture device input: \(error.localizedDescription)")
-          }
-        }
+                  }
       }
     private func captureDevice(forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
        if #available(iOS 10.0, *) {
@@ -186,7 +273,7 @@ class CameraVC: UIViewController {
      }
     private func startSession() {
         sessionQueue.async {
-          self.captureSession.startRunning()
+//          self.captureSession.startRunning()
         }
       }
 

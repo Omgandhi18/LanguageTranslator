@@ -39,7 +39,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Logo" width="500" height="500"/>
+        <image name="Logo" width="1024" height="1024"/>
         <namedColor name="startupBack">
             <color red="0.8784313725490196" green="0.88235294117647056" blue="0.8666666666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

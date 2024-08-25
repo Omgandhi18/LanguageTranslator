@@ -8,8 +8,9 @@
 import UIKit
 import MLKit
 import MaterialComponents
+import AVFoundation
 
-class HomeVC: UIViewController {
+class HomeVC: UIViewController{
 
     @IBOutlet weak var txtFirstLang: UITextField!
     @IBOutlet weak var txtSecLang: UITextField!
@@ -38,14 +39,44 @@ class HomeVC: UIViewController {
         txtFirstLang.text = TranslateLanguage.english.localizedName()
         txtSecLang.text = TranslateLanguage.english.localizedName()
         txtText2.isUserInteractionEnabled = false
+        
+        var ViewForDoneButtonOnKeyboard = UIToolbar()
+        ViewForDoneButtonOnKeyboard.sizeToFit()
+        var btnDoneOnKeyboard = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.doneBtnFromKeyboardClicked))
+        ViewForDoneButtonOnKeyboard.items = [btnDoneOnKeyboard]
+        txtText1.inputAccessoryView = ViewForDoneButtonOnKeyboard
     }
     
     @IBAction func btnOpenCamera(_ sender: Any) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "cameraStory") as! CameraVC
-        vc.modalTransitionStyle = .flipHorizontal
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+        if AVCaptureDevice.authorizationStatus(for: .video) ==  AVAuthorizationStatus.authorized {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "cameraStory") as! CameraVC
+            vc.modalTransitionStyle = .flipHorizontal
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
+        }else{
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: {[self] (granted: Bool) -> Void in
+               if granted == true {
+                   // User granted
+                   DispatchQueue.main.async {
+                       let vc = self.storyboard?.instantiateViewController(withIdentifier: "cameraStory") as! CameraVC
+                       vc.modalTransitionStyle = .flipHorizontal
+                       vc.modalPresentationStyle = .fullScreen
+                       self.present(vc, animated: true)
+                   }
+                   
+               } else {
+                   // User rejected
+                   showToastAlert(strmsg: "Please allow access to camera from Settings", preferredStyle: .alert)
+                   
+               }
+           })
+        }
+        
     }
+    @IBAction func doneBtnFromKeyboardClicked (sender: Any) {
+        //Hide Keyboard by endEditing or Anything you want.
+        self.view.endEditing(true)
+      }
 }
 
 extension HomeVC: UITextFieldDelegate,UITextViewDelegate,UIPickerViewDelegate,UIPickerViewDataSource{
@@ -69,6 +100,22 @@ extension HomeVC: UITextFieldDelegate,UITextViewDelegate,UIPickerViewDelegate,UI
        
         textField.inputView = pickerView
         return true
+    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView == txtText1{
+            if textView.text == "Enter text here"{
+                textView.text = ""
+            }
+                
+        }
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView == txtText1{
+            if textView.text.trimmingCharacters(in: .whitespacesAndNewlines) == ""{
+                textView.text = "Enter text here"
+            }
+                
+        }
     }
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -129,4 +176,50 @@ extension HomeVC: UITextFieldDelegate,UITextViewDelegate,UIPickerViewDelegate,UI
           }
         }
       }
+    func showToastAlert(strmsg : String?, preferredStyle: UIAlertController.Style) {
+        let message = strmsg
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: preferredStyle
+        )
+        alert.setBackgroundColor(color: UIColor.systemBackground)
+        
+        // Set message font and color
+        let attributedString = NSAttributedString(
+            string: message ?? "",
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
+                .foregroundColor: UIColor.label // Set the desired text color
+            ]
+        )
+
+        alert.setValue(attributedString, forKey: "attributedMessage")
+        //alert.setMessage(font: UIFont.systemFont(ofSize: 17,weight: .semibold), color: .ecom_main)
+        alert.modalPresentationStyle = .overFullScreen
+        if let popoverController = alert.popoverPresentationController {
+            
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.maxY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        
+        DispatchQueue.main.async(execute: {
+            self.present(alert, animated: true)
+        })
+        
+        // duration in seconds
+        let duration: Double = 1.0
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + duration) {
+            alert.dismiss(animated: true)
+        }
+    }
+
 }
+extension UIAlertController{
+    func setBackgroundColor(color: UIColor) {
+        if let bgView = self.view.subviews.first, let groupView = bgView.subviews.first, let contentView = groupView.subviews.first {
+            contentView.backgroundColor = color
+        }
+    }
+
+}
+
